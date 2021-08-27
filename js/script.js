@@ -87,4 +87,58 @@ window.addEventListener('DOMContentLoaded', () => {
     stopTimer();
   }
   countTimer('27 august 2021');
+
+  // Меню
+  const toggleMenu = () => {
+    const btnMenu = document.querySelector('.menu'),
+      btnClose = document.querySelector('.close-btn'),
+      menu = document.querySelector('menu'),
+      menuItems = menu.querySelectorAll('ul>li');
+
+    const handlerMenu = () => {
+      menu.classList.toggle('active-menu');
+    };
+
+    btnMenu.addEventListener('click', handlerMenu);
+    btnClose.addEventListener('click', handlerMenu);
+
+    menuItems.forEach((elem) => {
+      elem.addEventListener('click', handlerMenu);
+    });
+  };
+
+  toggleMenu();
+
+  // Модальное окно
+  const togglePopUp = () => {
+    const popUp = document.querySelector('.popup'),
+      popUpContent = document.querySelector('.popup-content'),
+      btnPopUp = document.querySelectorAll('.popup-btn'),
+      btnPopUpClose = document.querySelector('.popup-close'),
+      widthWindow = window.innerWidth;
+
+    btnPopUp.forEach((elem) => {
+      elem.addEventListener('click', () => {
+        popUp.style.display = 'block';
+        let op = 0;
+        if (widthWindow > 768) {
+          // eslint-disable-next-line no-inner-declarations
+          function startAnimation() {
+            if (op !== 10) {
+              requestAnimationFrame(startAnimation);
+            }
+            op++;
+            popUpContent.style.opacity = `${op / 10 - 0.1}`;
+          }
+          startAnimation();
+        }
+      });
+    });
+
+    btnPopUpClose.addEventListener('click', () => {
+      popUp.style.display = 'none';
+    });
+  };
+
+  togglePopUp();
 });
