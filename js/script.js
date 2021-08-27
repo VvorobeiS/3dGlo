@@ -114,8 +114,12 @@ window.addEventListener('DOMContentLoaded', () => {
     const popUp = document.querySelector('.popup'),
       popUpContent = document.querySelector('.popup-content'),
       btnPopUp = document.querySelectorAll('.popup-btn'),
-      btnPopUpClose = document.querySelector('.popup-close'),
+      btnPopUpClose = document.querySelector('.popup-close');
+    let widthWindow = window.innerWidth;
+
+    window.addEventListener('resize', () => {
       widthWindow = window.innerWidth;
+    });
 
     btnPopUp.forEach((elem) => {
       elem.addEventListener('click', () => {
@@ -124,11 +128,11 @@ window.addEventListener('DOMContentLoaded', () => {
         if (widthWindow > 768) {
           // eslint-disable-next-line no-inner-declarations
           function startAnimation() {
-            if (op !== 10) {
+            if (op !== 9) {
               requestAnimationFrame(startAnimation);
             }
             op++;
-            popUpContent.style.opacity = `${op / 10 - 0.1}`;
+            popUpContent.style.opacity = `${op / 10}`;
           }
           startAnimation();
         }
