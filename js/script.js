@@ -253,4 +253,119 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   slider();
+
+  // Меняем изображение по наведению
+  const toggleImgSrc = () => {
+    const commandPhoto = document.querySelectorAll('.command__photo');
+    commandPhoto.forEach((item) => {
+      item.addEventListener('mouseenter', (e) => {
+        [e.target.src, e.target.dataset.img] = [e.target.dataset.img, e.target.src];
+      });
+      item.addEventListener('mouseleave', (e) => {
+        [e.target.dataset.img, e.target.src] = [e.target.src, e.target.dataset.img];
+      });
+    });
+  };
+
+  toggleImgSrc();
+
+  // Валидация инпутов
+  const validationInputs = () => {
+    const inputsCalcItems = document.querySelectorAll('.calc-item');
+    const inputsUserName = document.querySelectorAll('[name="user_name"]');
+    const inputsUserMail = document.querySelectorAll('[name="user_email"]');
+    const inputsUserPhone = document.querySelectorAll('[name="user_phone"]');
+    const inputMessage = document.querySelector('.mess');
+
+    inputsCalcItems.forEach((item) => {
+      item.addEventListener('input', () => {
+        item.value = item.value.replace(/\D/, '');
+      });
+    });
+
+    inputsUserName.forEach((item) => {
+      item.addEventListener('input', () => {
+        item.value = item.value.replace(/[^А-ЯЁ а-яё-]/, '');
+        item.value = item.value.replace(/\ +/g, ' ');
+        item.value = item.value.replace(/\-+/g, '-');
+      });
+      item.addEventListener('blur', () => {
+        item.value = item.value.replace(/[\s\-]+$/g, '');
+        item.value = item.value.replace(/^[\s\-]+/g, '');
+        item.value = item.value.replace(/^[\s\ -]+/g, '');
+        const string = item.value.split(/[\s,]/);
+        const newString = [];
+        string.forEach((elem) => {
+          elem = elem.charAt(0).toUpperCase() + elem.slice(1);
+          newString.push(elem);
+        });
+        console.log(newString);
+        item.value = newString.join(' ');
+      });
+    });
+
+    inputsUserMail.forEach((item) => {
+      item.addEventListener('input', () => {
+        item.value = item.value.replace(/[^a-zA-Z\@\_\.\~\!\*\']/g, '');
+        item.value = item.value.replace(/\@+/g, '@');
+        item.value = item.value.replace(/\_+/g, '_');
+        item.value = item.value.replace(/\.+/g, '.');
+        item.value = item.value.replace(/\~+/g, '~');
+        item.value = item.value.replace(/\!+/g, '!');
+        item.value = item.value.replace(/\*+/g, '*');
+        item.value = item.value.replace(/\'+/g, "'");
+        item.value = item.value.replace(/\-+/g, '-');
+        item.value = item.value.replace(/[ ]+/g, '');
+        item.value = item.value.replace(/^\_+/g, '');
+        item.value = item.value.replace(/^\.+/g, '');
+        item.value = item.value.replace(/^\~+/g, '');
+        item.value = item.value.replace(/^\!+/g, '');
+        item.value = item.value.replace(/^\@+/g, '');
+        item.value = item.value.replace(/^\*+/g, '');
+        item.value = item.value.replace(/^\'+/g, '');
+        item.value = item.value.replace(/^\-+/g, '-');
+        item.value = item.value.replace(/^[ ]+/g, '');
+      });
+      item.addEventListener('blur', () => {
+        item.value = item.value.replace(/\_+$/g, '');
+        item.value = item.value.replace(/\.+$/g, '');
+        item.value = item.value.replace(/\~+$/g, '');
+        item.value = item.value.replace(/\!+$/g, '');
+        item.value = item.value.replace(/\@+$/g, '');
+        item.value = item.value.replace(/\*+$/g, '');
+        item.value = item.value.replace(/\'+$/g, '');
+        item.value = item.value.replace(/\-+$/g, '');
+      });
+    });
+
+    inputMessage.addEventListener('input', () => {
+      inputMessage.value = inputMessage.value.replace(/[^A-Za-z -]/, '');
+      inputMessage.value = inputMessage.value.replace(/\ +/g, ' ');
+      inputMessage.value = inputMessage.value.replace(/\-+/g, '-');
+    });
+    inputMessage.addEventListener('blur', () => {
+      inputMessage.value = inputMessage.value.replace(/[\s\-]+$/g, '');
+      inputMessage.value = inputMessage.value.replace(/^[\s\-]+/g, '');
+      inputMessage.value = inputMessage.value.replace(/^[\s\ -]+/g, '');
+    });
+
+    inputsUserPhone.forEach((item) => {
+      item.addEventListener('input', () => {
+        item.value = item.value.replace(/[^0-9()-]/, '');
+        item.value = item.value.replace(/\-+/g, '-');
+        item.value = item.value.replace(/\(+/g, '(');
+        item.value = item.value.replace(/\)+/g, ')');
+        item.value = item.value.replace(/^\-+/g, '');
+        item.value = item.value.replace(/^\(+/g, '');
+        item.value = item.value.replace(/^\)+/g, '');
+      });
+      item.addEventListener('blur', () => {
+        item.value = item.value.replace(/\-+$/g, '');
+        item.value = item.value.replace(/\(+$/g, '');
+        item.value = item.value.replace(/\)+$/g, '');
+      });
+    });
+  };
+
+  validationInputs();
 });
