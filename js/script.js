@@ -416,13 +416,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // send-ajax-form
   const sendForm = () => {
-    const errorMessage = 'Что-то пошло не так...',
-      loadMessage = 'Загрузка...',
-      successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
     const form = document.querySelectorAll('form');
-    const statusMessage = document.createElement('div');
+    const loadIconDiv = document.createElement('div');
 
-    statusMessage.style.cssText = 'font-size:2rem; color:white;';
+    loadIconDiv.style.color = '#fff';
+
+    const successMessage = 'Спасибо! Скоро рассмотрим вашу заявку!',
+      errorMessage = 'Ой что-то пошло не так!';
 
     const clearInput = (form) => {
       const inputs = form.querySelectorAll('input');
@@ -431,34 +431,66 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     };
 
-    const postData = (body, outputData, errorData, form) => {
-      const request = new XMLHttpRequest();
+    const loadReqText = (data) => {
+      loadIconDiv.textContent = data;
+    };
 
-      request.addEventListener('readystatechange', () => {
-        if (request.readyState !== 4) {
-          return;
-        }
+    const postData = (body, form) => {
+      const promise = new Promise((resolve, reject) => {
+        const request = new XMLHttpRequest();
 
-        if (request.status === 200) {
-          outputData();
-        } else {
-          errorData(request.status);
-        }
+        request.addEventListener('readystatechange', () => {
+          if (request.readyState !== 4) {
+            return;
+          }
 
-        clearInput(form);
+          loadIconDiv.classList.remove('sk-fading-circle');
+          loadIconDiv.classList.add('loadIconText');
+
+          if (request.status === 200) {
+            resolve(successMessage);
+          } else {
+            reject([request.response, errorMessage]);
+          }
+
+          setTimeout(() => {
+            loadIconDiv.textContent = '';
+          }, 3000);
+        });
+
+        request.open('POST', './server.php');
+        request.setRequestHeader('Content-Type', 'application/json');
+
+        request.send(JSON.stringify(body));
       });
 
-      request.open('POST', './server.php');
-      request.setRequestHeader('Content-Type', 'application/json');
-
-      request.send(JSON.stringify(body));
+      promise
+        .then(loadReqText)
+        .then(clearInput(form))
+        .catch((err) => {
+          console.error(err[0]);
+          loadReqText(err[1]);
+        });
     };
 
     form.forEach((el) => {
       el.addEventListener('submit', (e) => {
         e.preventDefault();
-        el.appendChild(statusMessage);
-        statusMessage.textContent = loadMessage;
+
+        if (loadIconDiv) {
+          loadIconDiv.textContent = '';
+        }
+
+        loadIconDiv.classList.remove('loadIconText');
+        loadIconDiv.classList.add('sk-fading-circle');
+
+        for (let i = 1; i < 13; i++) {
+          const innerDiv = document.createElement('div');
+          innerDiv.classList.add(`sk-circle`);
+          innerDiv.classList.add(`sk-circle-${i}`);
+          loadIconDiv.insertAdjacentElement('beforeend', innerDiv);
+        }
+        el.appendChild(loadIconDiv);
 
         const formData = new FormData(el);
         let body = {};
@@ -467,17 +499,7 @@ window.addEventListener('DOMContentLoaded', () => {
           body[key] = val;
         });
 
-        postData(
-          body,
-          () => {
-            statusMessage.textContent = successMessage;
-          },
-          (err) => {
-            statusMessage.textContent = errorMessage;
-            console.error(err);
-          },
-          el
-        );
+        postData(body, el);
       });
     });
   };
