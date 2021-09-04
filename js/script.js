@@ -428,6 +428,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const inputs = form.querySelectorAll('input');
       inputs.forEach((input) => {
         input.value = '';
+        input.classList.remove('success');
       });
     };
 
@@ -435,71 +436,68 @@ window.addEventListener('DOMContentLoaded', () => {
       loadIconDiv.textContent = data;
     };
 
-    const postData = (body, form) => {
-      const promise = new Promise((resolve, reject) => {
-        const request = new XMLHttpRequest();
-
-        request.addEventListener('readystatechange', () => {
-          if (request.readyState !== 4) {
-            return;
-          }
-
-          loadIconDiv.classList.remove('sk-fading-circle');
-          loadIconDiv.classList.add('loadIconText');
-
-          if (request.status === 200) {
-            resolve(successMessage);
-          } else {
-            reject([request.response, errorMessage]);
-          }
-
-          setTimeout(() => {
-            loadIconDiv.textContent = '';
-          }, 3000);
-        });
-
-        request.open('POST', './server.php');
-        request.setRequestHeader('Content-Type', 'application/json');
-
-        request.send(JSON.stringify(body));
+    const postData = (body) => {
+      return fetch('./server.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
       });
-
-      promise
-        .then(loadReqText)
-        .then(clearInput(form))
-        .catch((err) => {
-          console.error(err[0]);
-          loadReqText(err[1]);
-        });
     };
 
     form.forEach((el) => {
       el.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        if (loadIconDiv) {
-          loadIconDiv.textContent = '';
-        }
+        setTimeout(() => {
+          const subBtn = el.querySelector('.form-btn');
+          console.log(subBtn);
+          if (subBtn.classList.contains('cancel')) {
+            return;
+          }
 
-        loadIconDiv.classList.remove('loadIconText');
-        loadIconDiv.classList.add('sk-fading-circle');
+          if (loadIconDiv) {
+            loadIconDiv.textContent = '';
+          }
 
-        for (let i = 1; i < 13; i++) {
-          const innerDiv = document.createElement('div');
-          innerDiv.classList.add(`sk-circle`);
-          innerDiv.classList.add(`sk-circle-${i}`);
-          loadIconDiv.insertAdjacentElement('beforeend', innerDiv);
-        }
-        el.appendChild(loadIconDiv);
+          loadIconDiv.classList.remove('loadIconText');
+          loadIconDiv.classList.add('sk-fading-circle');
 
-        const formData = new FormData(el);
-        let body = {};
+          for (let i = 1; i < 13; i++) {
+            const innerDiv = document.createElement('div');
+            innerDiv.classList.add(`sk-circle`);
+            innerDiv.classList.add(`sk-circle-${i}`);
+            loadIconDiv.insertAdjacentElement('beforeend', innerDiv);
+          }
+          el.appendChild(loadIconDiv);
 
-        formData.forEach((val, key) => {
-          body[key] = val;
-        });
+          const formData = new FormData(el);
+          let body = {};
 
-        postData(body, el);
+          formData.forEach((val, key) => {
+            body[key] = val;
+          });
+
+          postData(body)
+            .then((response) => {
+              if (response.status !== 200) {
+                console.log('!');
+                throw new Error('status network not 200');
+              }
+              loadIconDiv.classList.remove('sk-fading-circle');
+              loadIconDiv.classList.add('loadIconText');
+              loadReqText(successMessage);
+              clearInput(el);
+              setTimeout(() => {
+                loadIconDiv.textContent = '';
+              }, 3000);
+            })
+            .catch((err) => {
+              console.error(err);
+              loadReqText(errorMessage);
+            });
+        }, 500);
       });
     });
   };
