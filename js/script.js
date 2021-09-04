@@ -6,9 +6,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const timerSeconds = document.querySelector('#timer-seconds');
 
     function getTimeRemaining() {
-      const dateStop = new Date(deadline).getTime();
+      const dabodyop = new Date(deadline).getTime();
       const dateNow = new Date().getTime();
-      const timeRemaining = (dateStop - dateNow) / 1000;
+      const timeRemaining = (dabodyop - dateNow) / 1000;
       const seconds = Math.floor(timeRemaining % 60);
       const minutes = Math.floor((timeRemaining / 60) % 60);
       const hours = Math.floor(timeRemaining / 60 / 60);
@@ -413,4 +413,74 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   calculator(100);
+
+  // send-ajax-form
+  const sendForm = () => {
+    const errorMessage = 'Что-то пошло не так...',
+      loadMessage = 'Загрузка...',
+      successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+    const form = document.querySelectorAll('form');
+    const statusMessage = document.createElement('div');
+
+    statusMessage.style.cssText = 'font-size:2rem; color:white;';
+
+    const clearInput = (form) => {
+      const inputs = form.querySelectorAll('input');
+      inputs.forEach((input) => {
+        input.value = '';
+      });
+    };
+
+    const postData = (body, outputData, errorData, form) => {
+      const request = new XMLHttpRequest();
+
+      request.addEventListener('readystatechange', () => {
+        if (request.readyState !== 4) {
+          return;
+        }
+
+        if (request.status === 200) {
+          outputData();
+        } else {
+          errorData(request.status);
+        }
+
+        clearInput(form);
+      });
+
+      request.open('POST', './server.php');
+      request.setRequestHeader('Content-Type', 'application/json');
+
+      request.send(JSON.stringify(body));
+    };
+
+    form.forEach((el) => {
+      el.addEventListener('submit', (e) => {
+        e.preventDefault();
+        el.appendChild(statusMessage);
+        statusMessage.textContent = loadMessage;
+
+        const formData = new FormData(el);
+        let body = {};
+
+        formData.forEach((val, key) => {
+          body[key] = val;
+        });
+
+        postData(
+          body,
+          () => {
+            statusMessage.textContent = successMessage;
+          },
+          (err) => {
+            statusMessage.textContent = errorMessage;
+            console.error(err);
+          },
+          el
+        );
+      });
+    });
+  };
+
+  sendForm();
 });
