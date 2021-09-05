@@ -27,7 +27,7 @@ const calculator = (price = 100) => {
       total = price * typeValue * squareValue * countValue * dayValue;
     }
 
-    totalValue.textContent = total;
+    totalValue.textContent = Math.round(total);
   };
 
   calcBlock.addEventListener('change', (event) => {

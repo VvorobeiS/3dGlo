@@ -18,25 +18,27 @@ function countTimer(deadline) {
     };
   }
 
-  const timerInterval = setInterval(() => {
-    function updateClock() {
-      const timer = getTimeRemaining();
-      if (timer.hours < 10) {
-        timerHours.textContent = `0${timer.hours}`;
-      } else {
-        timerHours.textContent = timer.hours;
-      }
-      if (timer.minutes < 10) {
-        timerMinutes.textContent = `0${timer.minutes}`;
-      } else {
-        timerMinutes.textContent = timer.minutes;
-      }
-      if (timer.seconds < 10) {
-        timerSeconds.textContent = `0${timer.seconds}`;
-      } else {
-        timerSeconds.textContent = timer.seconds;
-      }
+  function updateClock() {
+    const timer = getTimeRemaining();
+    if (timer.hours < 10) {
+      timerHours.textContent = `0${timer.hours}`;
+    } else {
+      timerHours.textContent = timer.hours;
     }
+    if (timer.minutes < 10) {
+      timerMinutes.textContent = `0${timer.minutes}`;
+    } else {
+      timerMinutes.textContent = timer.minutes;
+    }
+    if (timer.seconds < 10) {
+      timerSeconds.textContent = `0${timer.seconds}`;
+    } else {
+      timerSeconds.textContent = timer.seconds;
+    }
+  }
+  updateClock();
+
+  const timerInterval = setInterval(() => {
     updateClock();
   }, 1000);
 

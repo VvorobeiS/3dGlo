@@ -1,3 +1,4 @@
+/* eslint-disable */
 const validationInputs = () => {
   const inputsCalcItems = document.querySelectorAll('.calc-item');
   const inputsUserName = document.querySelectorAll('[name="user_name"]');
@@ -35,6 +36,7 @@ const validationInputs = () => {
   });
 
   inputsUserMail.forEach((item) => {
+    item.setAttribute(`pattern`, `([A-z0-9_.-]{1,})@([A-z0-9_.-]{1,}).([A-z]{2,8})`);
     item.addEventListener('input', () => {
       item.value = item.value.replace(/[^a-zA-Z\@\_\.\~\!\*\']/g, '');
       item.value = item.value.replace(/\@+/g, '@');
@@ -80,6 +82,8 @@ const validationInputs = () => {
   });
 
   inputsUserPhone.forEach((item) => {
+    item.setAttribute(`pattern`, `^(\\8)\\d{10}`);
+    item.setAttribute(`maxlength`, `11`);
     item.addEventListener('input', () => {
       item.value = item.value.replace(/[^0-9()-]/, '');
       item.value = item.value.replace(/\-+/g, '-');
