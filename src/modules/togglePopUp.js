@@ -15,11 +15,11 @@ const togglePopUp = () => {
       if (widthWindow > 768) {
         // eslint-disable-next-line no-inner-declarations
         function startAnimation() {
-          if (op !== 9) {
+          if (op !== 29) {
             requestAnimationFrame(startAnimation);
           }
           op++;
-          popUpContent.style.opacity = `${op / 10}`;
+          popUpContent.style.opacity = `${op / 30}`;
         }
         startAnimation();
       }
@@ -30,10 +30,12 @@ const togglePopUp = () => {
     let target = event.target;
     if (target.classList.contains('popup-close')) {
       popUp.style.display = 'none';
+      popUpContent.style.opacity = '0';
     } else {
       target = target.closest('.popup-content');
       if (!target) {
         popUp.style.display = 'none';
+        popUpContent.style.opacity = '0';
       }
     }
   });

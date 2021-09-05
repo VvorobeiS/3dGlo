@@ -21,6 +21,7 @@ const validationInputs = () => {
       item.value = item.value.replace(/\-+/g, '-');
     });
     item.addEventListener('blur', () => {
+      item.value = item.value.replace(/[^А-ЯЁ а-яё-]/g, '');
       item.value = item.value.replace(/[\s\-]+$/g, '');
       item.value = item.value.replace(/^[\s\-]+/g, '');
       item.value = item.value.replace(/^[\s\ -]+/g, '');
@@ -71,29 +72,31 @@ const validationInputs = () => {
   });
 
   inputMessage.addEventListener('input', () => {
-    inputMessage.value = inputMessage.value.replace(/[^A-Za-z -]/, '');
+    inputMessage.value = inputMessage.value.replace(/[^А-Яа-яЁё -]/, '');
     inputMessage.value = inputMessage.value.replace(/\ +/g, ' ');
     inputMessage.value = inputMessage.value.replace(/\-+/g, '-');
   });
   inputMessage.addEventListener('blur', () => {
+    inputMessage.value = inputMessage.value.replace(/[^А-Яа-яЁё -]/g, '');
     inputMessage.value = inputMessage.value.replace(/[\s\-]+$/g, '');
     inputMessage.value = inputMessage.value.replace(/^[\s\-]+/g, '');
     inputMessage.value = inputMessage.value.replace(/^[\s\ -]+/g, '');
   });
 
   inputsUserPhone.forEach((item) => {
-    item.setAttribute(`pattern`, `^(\\8)\\d{10}`);
+    item.setAttribute(`pattern`, `^8\\d{10}`);
     item.setAttribute(`maxlength`, `11`);
     item.addEventListener('input', () => {
-      item.value = item.value.replace(/[^0-9()-]/, '');
-      item.value = item.value.replace(/\-+/g, '-');
-      item.value = item.value.replace(/\(+/g, '(');
-      item.value = item.value.replace(/\)+/g, ')');
+      item.value = item.value.replace(/[^0-9]/, '');
+      item.value = item.value.replace(/\-+/g, '');
+      item.value = item.value.replace(/\(+/g, '');
+      item.value = item.value.replace(/\)+/g, '');
       item.value = item.value.replace(/^\-+/g, '');
       item.value = item.value.replace(/^\(+/g, '');
       item.value = item.value.replace(/^\)+/g, '');
     });
     item.addEventListener('blur', () => {
+      item.value = item.value.replace(/[^0-9]/g, '');
       item.value = item.value.replace(/\-+$/g, '');
       item.value = item.value.replace(/\(+$/g, '');
       item.value = item.value.replace(/\)+$/g, '');
